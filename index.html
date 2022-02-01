@@ -1,0 +1,103 @@
+<div id='content'>
+  <div>
+    <h1>Patricks TOP 5:</h1>
+  </div>
+
+  <canvas class='margin' id='C' width='450' height='400'></canvas>
+</div>
+
+<style>
+  body {
+    background: #ccc;
+    display: grid;
+    height: 100vh;
+    place-items: center center;
+  }  
+
+  #content {
+    background: #006;
+    text-align: center;
+    border: solid 2px black;
+    height: auto;
+  }
+
+  h1 {
+    color: rgb(195, 236, 255)
+  }
+
+  canvas {
+    background-color: black;
+  }
+  
+</style>
+
+
+
+
+<script>
+  let ctx,
+      timer  = 0,
+      number = 4,
+      images = [],
+      audios = [],
+      started = false
+
+  document.addEventListener('mousedown', _=>{started = true})
+
+  window.onload = function() {
+    ctx = document.getElementById('C').getContext('2d')
+    ctx.textBaseline = 'middle'
+    ctx.font = '60px MS Comic Sans'
+    ctx.textAlign = 'center'
+    for (let i = 0; i < 5; i++) {
+      images[i] = new Image()
+      images[i].src = `./rsc/img${i}.jpg`
+      audios[i] = new Audio()
+      audios[i].src = `./rsc/aud${i}.wav`
+    }
+    audios[5] = new Audio()
+    audios[5].src = `./rsc/aud5.wav`
+   
+    loop()
+  }
+
+  function loop() {
+    if (!started) {
+      ctx.fillStyle = 'darkgreen'
+      ctx.fillRect(120, 160, 210, 80)
+      ctx.fillStyle = 'limegreen'
+      ctx.fillText(`START`, 225, 200)
+    }
+    
+    else {
+      number = 5 - (Math.floor(++timer / 1200) % 5)
+      if (timer % 1200 < 300) {
+        ctx.fillStyle = 'goldenrod'
+        ctx.fillText(`Nr. ${number}:`, 225, 200)
+        let alpha = Math.abs((timer % 1200) - 150) / 150
+        ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`
+        ctx.fillRect(0, 0, 450, 400)
+        audios[5].play()
+      }
+      else {
+        audios[number - 1].play()
+        if (timer % 1200 > 1000)
+          audios[number - 1].volume -= .005
+        let img = images[number - 1]
+        ctx.drawImage(img, 225 - img.width / 2, 200 - img.height / 2)
+        let alpha = ((timer % 1200) - 300) / 180
+        if (alpha < 1) {
+          ctx.fillStyle = `rgba(0, 0, 0, ${1 - alpha})`
+          ctx.fillRect(0, 0, 450, 400)
+        } 
+      }
+    }
+    if (timer < 5995)
+    requestAnimationFrame(loop)
+  }
+ 
+
+</script>
+
+
+
